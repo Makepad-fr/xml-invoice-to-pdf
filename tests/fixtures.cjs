@@ -1,0 +1,9 @@
+const {PDFDocument,StandardFonts}=require('pdf-lib');
+const fs=require('node:fs');
+async function originalPDF(){const pdf=await PDFDocument.create();pdf.setTitle('Original fictional invoice');pdf.setAuthor('Fixture supplier');const font=await pdf.embedFont(StandardFonts.Helvetica);for(let n=1;n<=2;n++){const p=pdf.addPage([595,842]);p.drawText(`SUPPLIER ORIGINAL - page ${n}`,{x:50,y:760,font,size:18});p.drawText('Invoice amount: EUR 720.00',{x:50,y:720,font,size:12});p.drawText('Original supplier footer - do not remove',{x:50,y:40,font,size:10});}pdf.getForm().createTextField('reference').setText('Preserve form data');return Buffer.from(await pdf.save());}
+const base=()=>fs.readFileSync('tests/fixtures/demo.xml','utf8');
+function embedded(bytes,name='supplier.pdf'){return `<cac:AdditionalDocumentReference><cbc:ID>original</cbc:ID><cac:Attachment><cbc:EmbeddedDocumentBinaryObject mimeCode="application/pdf" filename="${name}">${bytes.toString('base64')}</cbc:EmbeddedDocumentBinaryObject></cac:Attachment></cac:AdditionalDocumentReference>`;}
+const ubl=(bytes)=>base().replace('</Invoice>',embedded(bytes)+'</Invoice>');
+const cii=bytes=>`<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"><rsm:ExchangedDocument><ram:ID>FICTIONAL</ram:ID></rsm:ExchangedDocument><rsm:SupplyChainTradeTransaction><ram:ApplicableHeaderTradeAgreement><ram:AdditionalReferencedDocument><ram:AttachmentBinaryObject mimeCode="application/pdf" filename="original.pdf">${bytes.toString('base64')}</ram:AttachmentBinaryObject></ram:AdditionalReferencedDocument></ram:ApplicableHeaderTradeAgreement></rsm:SupplyChainTradeTransaction></rsm:CrossIndustryInvoice>`;
+module.exports={originalPDF,base,embedded,ubl,cii};
+if(require.main===module)(async()=>{fs.writeFileSync(process.argv[2],ubl(await originalPDF()))})();

@@ -1,46 +1,28 @@
 const {chromium}=require('playwright');
-const {readFileSync}=require('node:fs');
-const {resolve}=require('node:path');
-const assert=require('node:assert/strict');
-(async()=>{
- const browser=await chromium.launch();
- try {
- const context=await browser.newContext({offline:true});
+const fs=require('node:fs');const {resolve}=require('node:path');const assert=require('node:assert/strict');
+const {originalPDF,base,embedded,ubl,cii}=require('./fixtures.cjs');
+const crc32=bytes=>{let c=0xffffffff;for(const b of bytes){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return (c^0xffffffff)>>>0;};
+function unzipStored(bytes){let offset=0,result=[];while(bytes.readUInt32LE(offset)===0x04034b50){assert.equal(bytes.readUInt16LE(offset+8),0);const size=bytes.readUInt32LE(offset+18),nameSize=bytes.readUInt16LE(offset+26),extraSize=bytes.readUInt16LE(offset+28),start=offset+30+nameSize+extraSize;const payload=bytes.subarray(start,start+size);assert.equal(crc32(payload),bytes.readUInt32LE(offset+14));result.push({name:bytes.subarray(offset+30,offset+30+nameSize).toString(),bytes:payload});offset=start+size;}assert.equal(bytes.readUInt32LE(offset),0x02014b50);return result;}
+(async()=>{const original=await originalPDF(),browser=await chromium.launch();try{
+ const context=await browser.newContext({offline:true,acceptDownloads:true,viewport:{width:1150,height:850},...(process.env.REVIEW_VIDEO_DIR?{recordVideo:{dir:process.env.REVIEW_VIDEO_DIR}}:{})});
  const page=await context.newPage(),network=[],errors=[];
- page.on('request',r=>{if(!r.url().startsWith('file:'))network.push(r.url())});
- page.on('pageerror',e=>errors.push(e.message));
- await page.goto('file://'+resolve('index.html'));
- const xml=readFileSync('tests/fixtures/demo.xml');
- await page.locator('#file').setInputFiles([
-  {name:'one.xml',mimeType:'text/xml',buffer:xml},
-  {name:'two.xml',mimeType:'text/xml',buffer:xml},
-  {name:'broken.xml',mimeType:'text/xml',buffer:Buffer.from('<broken>')}
- ]);
- await page.waitForFunction(()=>document.querySelector('#status').textContent==='2 ready · 1 could not be read');
- assert.equal(await page.locator('.file-row').count(),3);
- assert.match(await page.locator('.totals').textContent(),/720.00 EUR/);
- await page.locator('.file-select').nth(2).click();
- assert(await page.locator('#print').isDisabled());
- assert(await page.locator('#preview').isHidden());
- await page.locator('.file-select').first().click();
- await page.evaluate(()=>{window.print=()=>{window.printed=true}});
- await page.locator('#print-all').click();
- assert.equal(await page.locator('.sheet').count(),2);
- assert(await page.evaluate(()=>window.printed));
- await page.evaluate(()=>dispatchEvent(new Event('afterprint')));
- assert.equal(await page.locator('.sheet').count(),1);
- await page.locator('#clear').click();
- const source=xml.toString();
- await page.evaluate(source=>{const dataTransfer=new DataTransfer();for(const name of ['drop1.xml','drop2.xml'])dataTransfer.items.add(new File([source],name));document.querySelector('#drop').dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer}));},source);
- await page.waitForFunction(()=>document.querySelector('#status').textContent==='2 ready');
- await page.locator('.remove').first().click();assert.equal(await page.locator('.file-row').count(),1);
- await page.locator('#clear').click();
- await page.locator('#file').setInputFiles({name:'entity.xml',mimeType:'text/xml',buffer:Buffer.from('<!DOCTYPE x [<!ENTITY e SYSTEM "https://example.com">]><x>&e;</x>')});
- await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('could not'));
- assert(await page.locator('#print-all').isDisabled());
- await page.setViewportSize({width:390,height:844});
- assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
- assert.deepEqual(network,[]);assert.deepEqual(errors,[]);
- console.log('PASS: batch, invalid XML, DTD rejection, drag/drop, totals, printing, reset, mobile and offline privacy');
- } finally {await browser.close()}
+ page.on('request',r=>{if(!/^(file:|blob:)/.test(r.url()))network.push(r.url())});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file://'+resolve('index.html'));await page.evaluate(()=>{window.print=()=>{throw Error('Print dialog must never be used')}});
+ const load=async(files)=>{if(await page.locator('#clear').isVisible())await page.locator('#clear').click();await page.locator('#file').setInputFiles(files.map(([name,source])=>({name,mimeType:'text/xml',buffer:Buffer.isBuffer(source)?source:Buffer.from(source)})));await page.waitForFunction(()=>!document.querySelector('#status').textContent.includes('Reading'));};
+ const download=async(button)=>{const [d]=await Promise.all([page.waitForEvent('download'),page.locator(button).click()]);return {name:d.suggestedFilename(),bytes:fs.readFileSync(await d.path())};};
+ // Native PDF, metadata, form and supplier header/footer remain byte-identical.
+ await load([['invoice.xml',ubl(original)]]);assert.equal(await page.locator('.original-preview').count(),1);assert.equal(await page.locator('.notice,.eyebrow,.annex').count(),0);const one=await download('#print');assert.equal(one.name,'invoice.pdf');assert.deepEqual(one.bytes,original);
+ if(process.env.REVIEW_VIDEO_DIR)await page.screenshot({path:resolve(process.env.REVIEW_VIDEO_DIR,'preview.png')});
+ // A bad entry prevents an incomplete batch ZIP; individual good files still work.
+ await load([['invoice.xml',ubl(original)],['invoice.xml',ubl(original)],['bad.xml','<broken>']]);assert(await page.locator('#print-all').isDisabled());assert(!(await page.locator('#print').isDisabled()));await page.locator('.file-select').nth(2).click();assert(await page.locator('#print').isDisabled());await page.locator('.remove').nth(2).click();const zip=await download('#print-all');assert.equal(zip.name,'invoices.zip');const files=unzipStored(zip.bytes);assert.deepEqual(files.map(f=>f.name),['invoice.pdf','invoice (1).pdf']);for(const f of files)assert.deepEqual(f.bytes,original);
+ for(const [name,source] of [['no-original',base()],['external-only',base().replace('</Invoice>','<cac:AdditionalDocumentReference><cac:Attachment><cac:ExternalReference><cbc:URI>https://example.com/private</cbc:URI></cac:ExternalReference></cac:Attachment></cac:AdditionalDocumentReference></Invoice>')],['invalid-pdf',ubl(Buffer.from('%PDF-1.7\ninvalid\n%%EOF'))],['bad-base64',ubl(original).replace(original.toString('base64'),'@@@')],['doctype','<!DOCTYPE x [<!ENTITY e SYSTEM "https://example.com">]><x>&e;</x>'],['unsupported','<hello/>'],['empty',''],['oversize',' '.repeat(5*1024*1024+1)]]){await load([[name+'.xml',source]]);assert(await page.locator('#print').isDisabled(),name);assert(await page.locator('#print-all').isDisabled(),name);assert.equal(await page.locator('.original-preview').count(),0,name);}
+ // Multiple attachments require an explicit choice, never arbitrary first-PDF guessing.
+ const multi=base().replace('</Invoice>',embedded(original,'invoice.pdf')+embedded(original,'supporting.pdf')+'</Invoice>');await load([['multiple.xml',multi]]);assert(await page.locator('#print').isDisabled());await page.locator('select').selectOption('1');assert.deepEqual((await download('#print')).bytes,original);
+ await load([['cii.xml',cii(original)]]);assert.deepEqual((await download('#print')).bytes,original);
+ const credit=ubl(original).replaceAll('schema:xsd:Invoice-2','schema:xsd:CreditNote-2').replace('<Invoice ','<CreditNote ').replace('</Invoice>','</CreditNote>');await load([['credit.xml',credit]]);assert.deepEqual((await download('#print')).bytes,original);
+ const utf16=Buffer.concat([Buffer.from([255,254]),Buffer.from(ubl(original).replace('UTF-8','UTF-16'),'utf16le')]);await load([['utf16.xml',utf16]]);assert.deepEqual((await download('#print')).bytes,original);
+ await page.locator('#clear').click();assert.equal(await page.locator('.original-preview').count(),0);await page.evaluate(source=>{const dataTransfer=new DataTransfer();for(const name of ['drop1.xml','drop2.xml'])dataTransfer.items.add(new File([source],name));document.querySelector('#drop').dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer}));},ubl(original));await page.waitForFunction(()=>document.querySelector('#status').textContent==='2 ready');assert.equal(await page.locator('.file-row').count(),2);
+ await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(network,[]);assert.deepEqual(errors,[]);
+ await context.close();console.log('PASS: exact PDF bytes, no printing, ZIP integrity, mixed batch guards, no-original, corrupt PDF, DTD, external-only, ambiguity, CII, credit note, UTF16, drop/reset, mobile, zero network requests');
+ }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});
