@@ -1,0 +1,1 @@
+{"name":"xml-invoice-to-pdf","version":"1.0.0","private":true,"license":"MIT","scripts":{"test":"node tests/browser.cjs"},"devDependencies":{"playwright":"1.58.2"}}

@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+build/
+*.pdf
+*.xml
+!tests/fixtures/*.xml
