@@ -6,13 +6,13 @@
 :root{color-scheme:light;--ink:#111;--muted:#666;--line:#ddd;--paper:#ddd;--accent:#111}*{box-sizing:border-box}body{margin:0;background:#ddd;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1120px;margin:44px auto;padding:0 28px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font-weight:750;font-size:19px}.badge{font-size:12px;border:1px solid #ddd;border-radius:30px;padding:7px 13px;background:#ddd}h1{font:500 clamp(36px,5vw,58px)/1.05 Georgia,serif;letter-spacing:-1.8px;margin:45px 0 18px}p{max-width:720px;color:var(--muted)}.upload{margin:28px 0 20px;padding:28px;background:var(--paper);border:1px dashed #ddd;border-radius:15px;display:flex;gap:24px;align-items:center;justify-content:space-between}.upload.drag{background:#ddd}button,.file-label{display:inline-block;background:var(--ink);color:white;border:0;border-radius:8px;padding:12px 19px;font:600 14px/1.3 inherit;cursor:pointer}button:hover,.file-label:hover{background:#ddd}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:transparent;color:var(--ink);border:1px solid #ddd}.secondary:hover{background:#ddd}input[type=file]{max-width:270px;font:inherit}input::file-selector-button{padding:10px 14px;border:0;border-radius:7px;background:var(--ink);color:white;cursor:pointer}.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0}.toolbar label{margin-right:auto;font-size:13px}#status{padding:14px 18px;border-radius:8px;background:#ddd;margin:16px 0;white-space:pre-wrap}#status:empty{display:none}#status.error{background:#ddd;color:#ddd}.micro{font-size:12px}.empty{padding:45px 25px;text-align:center;color:var(--muted);border:1px solid var(--line);border-radius:12px}.sheet{background:white;padding:44px 48px;margin:24px 0;box-shadow:0 8px 35px #ddd;overflow-wrap:anywhere}.invoice-head{display:flex;justify-content:space-between;align-items:flex-start;gap:25px;border-bottom:2px solid var(--ink);padding-bottom:20px}.invoice-head h2{margin:0;font:500 32px Georgia,serif}.eyebrow{text-transform:uppercase;letter-spacing:1.3px;font-size:10px;color:var(--muted)}.meta{text-align:right;max-width:50%;font-size:13px}.parties{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:28px 0}.party p{white-space:pre-line;margin:6px 0;font-size:13px}.party h3,h3{font-size:14px;margin:22px 0 9px}table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}th{text-align:left;background:#ddd;color:var(--muted);font-weight:600}th,td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}thead{display:table-header-group}tr{break-inside:avoid}.totals{break-inside:avoid;max-width:430px;margin:25px 0 25px auto}.totalrow{display:flex;gap:20px;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.totalrow:last-child{font-weight:750;font-size:18px}.totalrow span:last-child{text-align:right}.notes{font-size:12px;white-space:pre-wrap}.notice{font-size:11px;border-top:1px solid var(--line);padding-top:14px;color:var(--muted);margin-top:28px}.annex{break-before:page}.field{margin:0 0 12px;border-bottom:1px solid #ddd;padding-bottom:7px;break-inside:avoid}.path{font:9px/1.4 monospace;color:#666;overflow-wrap:anywhere}.value{font:11px/1.5 monospace;white-space:pre-wrap;overflow-wrap:anywhere}.no-annex .annex{display:none}footer{padding:20px 0 35px;color:var(--muted);font-size:12px}button:focus-visible,input:focus-visible{outline:3px solid #ddd;outline-offset:4px}@media(max-width:650px){main{padding:0 16px;margin:22px auto}.top,.upload{align-items:flex-start;flex-direction:column}.sheet{padding:22px 16px}.parties{gap:18px}.invoice-head{flex-direction:column}.meta{text-align:left;max-width:100%}td,th{padding:7px 4px;font-size:10px}}@page{size:A4;margin:15mm 13mm}@media print{body{background:white;color:#111}main{margin:0;padding:0;max-width:none}.app-ui,footer{display:none!important}.sheet{padding:0;margin:0;box-shadow:none}.invoice-head h2{font-size:27px}.parties{gap:25px}.notice{font-size:9px}h3{break-after:avoid} .annex h2{font-size:23px}a{color:inherit}th{background:#edf2ed!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 
 :root{--ink:#111;--muted:#666;--line:#ddd;--paper:#fff}body{background:#fff;color:#111}main{max-width:1000px;margin:48px auto;padding:0 28px}.top{margin-bottom:32px}.top h1{font:600 26px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.8px;margin:0}.local{font-size:12px;color:#777}.upload{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:48px 20px;margin:0 0 20px;border:1px dashed #bbb;border-radius:10px;background:#fafafa;cursor:pointer;text-align:center}.upload strong{font-size:15px;font-weight:500}.upload span{font-size:13px;color:#777}.upload:hover,.upload.drag{background:#f0f0f0;border-color:#111}.upload:focus-within{outline:2px solid #111;outline-offset:4px}.upload input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}button{font:500 12px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:9px 13px;border-radius:6px;background:#111}button:hover{background:#333}.secondary{border-color:#ddd;color:#111;background:#fff}.secondary:hover{background:#f4f4f4}.toolbar{gap:8px;margin:18px 0 28px}.toolbar label{font-size:12px;color:#666;display:flex;align-items:center;gap:5px}input[type=checkbox]{accent-color:#111}#status{padding:0;background:none;font-size:12px;color:#666;margin:12px 0}#status.error{background:none;color:#111}.file-row{display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;padding:4px 0}.file-select{flex:1;min-width:0;text-align:left;background:none;color:#111;border-radius:0;padding:12px 10px;border-left:2px solid transparent}.file-select:hover{background:#fafafa}.file-select[aria-pressed=true]{border-left-color:#111;background:#f5f5f5}.file-name{display:block;overflow-wrap:anywhere;font-size:13px}.file-detail{display:block;color:#777;font-size:11px;margin-top:3px}.remove{background:none;color:#777;font-size:18px;padding:7px 10px}.remove:hover{background:#eee;color:#111}.sheet{border:1px solid #e5e5e5;box-shadow:none;margin:0;padding:36px}.invoice-head h2{font-family:inherit;font-size:25px;letter-spacing:-.6px}.path{color:#666}.field{border-color:#eee}th{background:#f5f5f5}footer{font-size:11px;color:#888;padding-top:24px}button:focus-visible,input:focus-visible{outline:2px solid #111} [hidden]{display:none!important}@media(max-width:650px){main{margin:24px auto;padding:0 16px}.top{flex-direction:row;align-items:center}.upload{align-items:center;padding:36px 16px}.sheet{padding:20px 14px}.toolbar{flex-wrap:wrap}.toolbar label{flex-basis:100%}}@media print{main{margin:0;padding:0;max-width:none}.sheet{border:0;padding:0;break-before:page}.sheet:first-child{break-before:auto}th{background:#f5f5f5!important}.path{color:#666}}
-.original-preview{width:100%;height:75vh;min-height:480px;border:1px solid #ddd;background:#fafafa}.attachment-picker{display:flex;gap:12px;align-items:center;margin:16px 0;font-size:13px}.attachment-picker select{max-width:70%;padding:8px;border:1px solid #ddd;background:white;color:#111}.preview-message{padding:20px;border:1px solid #ddd;font-size:13px;color:#555}.toolbar #clear{margin-left:auto}</style></head><body><main>
+.original-preview{width:100%;height:75vh;min-height:480px;border:1px solid #ddd;background:#fafafa}.attachment-picker{display:flex;gap:12px;align-items:center;margin:16px 0;font-size:13px}.attachment-picker select{max-width:70%;padding:8px;border:1px solid #ddd;background:white;color:#111}.preview-message{padding:20px;border:1px solid #ddd;font-size:13px;color:#555}.toolbar #clear{margin-left:auto}#batch-format{font:500 12px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:8px 10px;background:#fff;color:#111;border:1px solid #ddd;border-radius:6px;max-width:180px}#batch-format:focus-visible{outline:2px solid #111;outline-offset:3px}</style></head><body><main>
 <div class="app-ui">
 <header class="top"><h1>XML to PDF</h1><span class="local">Local & private</span></header>
 <label class="upload" id="drop" for="file"><strong>Drop XML invoices here</strong><span>or click to choose files</span><input id="file" type="file" multiple accept=".xml,application/xml,text/xml" aria-label="Choose XML invoices"></label>
 <div id="status" role="status" aria-live="polite"></div>
 <div id="files" aria-label="Invoices"></div>
-<div class="toolbar" id="toolbar" hidden><button id="clear" class="secondary">Clear all</button><button id="print-all" class="secondary" disabled>Export all (ZIP)</button><button id="print" disabled>Export PDF</button></div>
+<div class="toolbar" id="toolbar" hidden><button id="clear" class="secondary">Clear all</button><select id="batch-format" aria-label="Export all format"><option value="files">PDF files</option><option value="zip">ZIP archive</option></select><button id="print-all" class="secondary" disabled>Export all</button><button id="print" disabled>Export PDF</button></div>
 </div><article id="preview" hidden></article>
 <footer>Processed on your device. Keep your original XML.</footer>
 </main><!-- BEGIN PDF VALIDATOR -->
@@ -92,11 +92,11 @@ async function readPDF(node,index){
  }catch(e){return {name,error:'Cannot read PDF attachment: '+(e.message||'invalid or encrypted PDF')};}
 }
 async function extractOriginals(buffer){const doc=invoiceDocument(buffer),nodes=pdfCandidates(doc);if(!nodes.length)throw Error('No original PDF is embedded in this XML. Its original layout cannot be recovered from XML alone.');const attachments=[];for(let i=0;i<nodes.length;i++)attachments.push(await readPDF(nodes[i],i));return attachments;}
-let generation=0,entries=[],selected=null,nextId=0,pending=0,previewURL=null;
+let generation=0,entries=[],selected=null,nextId=0,pending=0,previewURL=null,exporting=false,exportMessage='';
 const activePDF=item=>item?.attachments?.[item.choice];
 const ready=item=>!!activePDF(item)?.bytes;
 function resetPreview(){if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null;}$('preview').replaceChildren();$('preview').hidden=true;$('print').disabled=true;document.title='XML to PDF';}
-function clear(){generation++;entries=[];selected=null;pending=0;resetPreview();$('file').value='';refresh();}
+function clear(){if(exporting)return;exportMessage='';generation++;entries=[];selected=null;pending=0;resetPreview();$('file').value='';refresh();}
 function show(id){
  selected=id;resetPreview();const item=entries.find(x=>x.id===id);
  if(item){
@@ -110,14 +110,16 @@ function show(id){
 }
 function refresh(){
  const count=entries.filter(ready).length,waiting=entries.filter(x=>x.attachments?.length>1&&x.choice===null).length;
- $('status').textContent=pending?'Reading files…':entries.length?`${count} ready`+(waiting?` · ${waiting} need a PDF selection`:'')+(entries.some(x=>x.error)?' · see file errors below':''):'';
- const list=$('files');list.replaceChildren();for(const item of entries){const row=el('div',undefined,'file-row'),button=el('button',undefined,'file-select');button.setAttribute('aria-pressed',String(selected===item.id));const pdf=activePDF(item);button.append(el('span',item.name,'file-name'),el('span',item.error||pdf?.error||(pdf?.bytes?`Original PDF · ${pdf.pages} page${pdf.pages===1?'':'s'}`:item.attachments?'Choose a PDF attachment':'Reading…'),'file-detail'));button.onclick=()=>show(item.id);const remove=el('button','×','remove');remove.setAttribute('aria-label','Remove '+item.name);remove.onclick=()=>{entries=entries.filter(x=>x.id!==item.id);if(selected===item.id)show(entries[0]?.id??null);else refresh()};row.append(button,remove);list.append(row);}
+ $('status').textContent=exporting?'Saving PDFs…':exportMessage|| (pending?'Reading files…':entries.length?`${count} ready`+(waiting?` · ${waiting} need a PDF selection`:'')+(entries.some(x=>x.error)?' · see file errors below':''):'');
+ const list=$('files');list.replaceChildren();for(const item of entries){const row=el('div',undefined,'file-row'),button=el('button',undefined,'file-select');button.setAttribute('aria-pressed',String(selected===item.id));const pdf=activePDF(item);button.append(el('span',item.name,'file-name'),el('span',item.error||pdf?.error||(pdf?.bytes?`Original PDF · ${pdf.pages} page${pdf.pages===1?'':'s'}`:item.attachments?'Choose a PDF attachment':'Reading…'),'file-detail'));button.disabled=exporting;button.onclick=()=>show(item.id);const remove=el('button','×','remove');remove.disabled=exporting;remove.setAttribute('aria-label','Remove '+item.name);remove.onclick=()=>{entries=entries.filter(x=>x.id!==item.id);if(selected===item.id)show(entries[0]?.id??null);else refresh()};row.append(button,remove);list.append(row);}
  $('toolbar').hidden=!entries.length;
  // Never silently omit failed or ambiguous invoices from a batch download.
- $('print-all').disabled=!entries.length||entries.some(x=>!ready(x))||pending>0;
- $('print').disabled=!ready(entries.find(x=>x.id===selected))||pending>0;
+ $('file').disabled=exporting;$('clear').disabled=exporting;$('batch-format').disabled=exporting;document.querySelectorAll('.attachment-picker select').forEach(s=>s.disabled=exporting);
+ $('print-all').disabled=exporting||!entries.length||entries.some(x=>!ready(x))||pending>0;
+ $('print').disabled=exporting||!ready(entries.find(x=>x.id===selected))||pending>0;
 }
 async function loadFiles(files){
+ if(exporting)return;exportMessage='';
  const ticket=generation,batch=Array.from(files);if(!batch.length)return;
  if(entries.length+batch.length>50){$('status').textContent='Choose up to 50 files. Clear the list to start another batch.';return;}
  pending++;const items=batch.map(file=>({id:++nextId,name:file.name,file,choice:null}));entries.push(...items);refresh();
@@ -135,9 +137,43 @@ function zipPDFs(items){
  }
  const size=central.reduce((sum,c)=>sum+c.length,0),end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,items.length,true);ev.setUint16(10,items.length,true);ev.setUint32(12,size,true);ev.setUint32(16,offset,true);return new Blob([...chunks,...central,end],{type:'application/zip'});
 }
+function canSaveFolder(){return window.isSecureContext&&window.top===window.self&&typeof window.showDirectoryPicker==='function';}
+function configureBatchFormat(){const supported=canSaveFolder();$('batch-format').querySelector('[value="files"]').disabled=!supported;$('batch-format').value=supported?'files':'zip';$('batch-format').title=supported?'Save separate PDFs to a folder, or download a ZIP':'This browser uses ZIP because folder saving is unavailable';}
+async function savePDFsToFolder(directory,items){
+ const reserved=new Set();for await(const name of directory.keys())reserved.add(name.toLowerCase());
+ let next=0,saved=0;const failures=[];
+ async function allocate(original){const stem=downloadName(original).slice(0,-4);for(let n=0;n<10000;n++){const name=stem+(n?` (${n})`:'')+'.pdf',key=name.toLowerCase();if(reserved.has(key))continue;reserved.add(key);
+  // Recheck before creation in case the folder changed after enumeration.
+  try{await directory.getFileHandle(name);continue;}catch(e){if(e.name==='TypeMismatchError')continue;if(e.name!=='NotFoundError')throw e;}
+  return {name,handle:await directory.getFileHandle(name,{create:true})};
+ }throw Error('Could not find an unused filename.');}
+ async function worker(){while(next<items.length){const item=items[next++];let stream;try{const {handle}=await allocate(item.name);stream=await handle.createWritable({keepExistingData:false,mode:'exclusive'});await stream.write(activePDF(item).bytes);await stream.close();saved++;}catch(e){if(stream)try{await stream.abort()}catch{}failures.push(item.name+': '+(e.message||e.name||'Unable to save'));}}}
+ await Promise.all(Array.from({length:Math.min(4,items.length)},worker));
+ return {saved,failures};
+}
+async function exportAll(){
+ if(exporting||pending||!entries.length||!entries.every(ready))return;
+ const items=entries.slice();
+ if($('batch-format').value==='zip'||!canSaveFolder()){download(zipPDFs(items),'application/zip','invoices.zip');return;}
+ exporting=true;exportMessage='';refresh();
+ try{
+  // Called directly in the click handler, before any await, to retain user activation.
+  const directory=await window.showDirectoryPicker({id:'invoice-pdfs',mode:'readwrite',startIn:'downloads'});
+  const result=await savePDFsToFolder(directory,items);
+  exportMessage=result.failures.length?`Saved ${result.saved} of ${items.length} PDFs. Could not save:\n${result.failures.join('\n')}\nNo ZIP was downloaded. You can select ZIP archive to export all originals.`:`Saved ${result.saved} PDF${result.saved===1?'':'s'} to ${directory.name}.`;
+ }catch(e){
+  if(e.name==='AbortError')exportMessage='Export cancelled.';
+  else if(e.name==='NotSupportedError'||e.name==='SecurityError'){
+   // Unsupported/policy-blocked picker: no files have been written yet.
+   $('batch-format').value='zip';download(zipPDFs(items),'application/zip','invoices.zip');exportMessage='Folder saving is unavailable here. Downloaded a ZIP instead.';
+  }else exportMessage='Could not save PDFs: '+(e.message||e.name)+'. Choose ZIP archive to download them instead.';
+ }finally{exporting=false;refresh();}
+}
+configureBatchFormat();
+
 $('file').addEventListener('change',e=>loadFiles(e.target.files));$('clear').addEventListener('click',clear);
 $('print').addEventListener('click',()=>{const item=entries.find(x=>x.id===selected);if(ready(item))download(activePDF(item).bytes,'application/pdf',downloadName(item.name))});
-$('print-all').addEventListener('click',()=>{if(entries.length&&entries.every(ready)&&pending===0)download(zipPDFs(entries),'application/zip','invoices.zip')});
+$('print-all').addEventListener('click',exportAll);
 const drop=$('drop');let dragDepth=0;document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();dragDepth=0;drop.classList.remove('drag');loadFiles(e.dataTransfer.files)});drop.addEventListener('dragenter',e=>{e.preventDefault();dragDepth++;drop.classList.add('drag')});drop.addEventListener('dragleave',()=>{if(--dragDepth<=0){dragDepth=0;drop.classList.remove('drag')}});
 
 </script></body></html>
