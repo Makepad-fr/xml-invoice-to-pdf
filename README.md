@@ -82,15 +82,14 @@ it runs. Unsupported/malformed XML gets an error rather than a misleading PDF.
 
 PDFs are saved beside their XMLs. Existing files are never overwritten: repeated
 conversions use ` (1)`, ` (2)`, etc. A single valid embedded PDF is preserved
-unchanged; otherwise a readable summary is rendered using the same HTML parser
-inside native WebKit, without a server. Original XMLs remain untouched. A mixed
+unchanged; XML without an embedded PDF is rejected rather than reconstructed. Multiple
+PDF attachments require selection in the browser. All processing is local. Original XMLs remain untouched. A mixed
 batch continues past failures and reports them. PDFs are created with user-only
 permissions. The installer builds locally for your Mac; no signing bypass needed.
 
 If the action is hidden, enable it under System Settings → Keyboard → Keyboard
 Shortcuts → Services → Files and Folders. macOS may ask permission to access the
-selected folder. Finder menus vary by macOS version. The native route uses system
-print pagination, which can differ slightly from browser PDFs.
+selected folder. Finder menus vary by macOS version. The Finder action preserves the original PDF bytes just like the browser.
 
 Installed files:
 - `~/Library/Services/Convert to PDF.workflow`
