@@ -46,3 +46,35 @@ details, credentials or account exports. CI runs on GitHub-hosted Ubuntu.
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## macOS Finder Quick Action
+
+Requires macOS 12+ and Apple's Command Line Tools (`xcode-select --install`).
+Download/clone the repository, then run from its directory:
+
+```sh
+bash macos/install.sh
+```
+
+Select one or more XML files in Finder, then right-click → **Quick Actions** or
+**Services** → **Convert to PDF**. No browser file selection or upload is needed.
+The action appears for XML file types; eligibility as an invoice is checked when
+it runs. Unsupported/malformed XML gets an error rather than a misleading PDF.
+
+PDFs are saved beside their XMLs. Existing files are never overwritten: repeated
+conversions use ` (1)`, ` (2)`, etc. A single valid embedded PDF is preserved
+unchanged; otherwise a readable summary is rendered using the same HTML parser
+inside native WebKit, without a server. Original XMLs remain untouched. A mixed
+batch continues past failures and reports them. PDFs are created with user-only
+permissions. The installer builds locally for your Mac; no signing bypass needed.
+
+If the action is hidden, enable it under System Settings → Keyboard → Keyboard
+Shortcuts → Services → Files and Folders. macOS may ask permission to access the
+selected folder. Finder menus vary by macOS version. The native route uses system
+print pagination, which can differ slightly from browser PDFs.
+
+Installed files:
+- `~/Library/Services/Convert to PDF.workflow`
+- `~/Library/Application Support/XML to PDF/`
+
+To uninstall, remove those two items in Finder. Re-run the installer to update.
