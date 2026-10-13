@@ -2,7 +2,7 @@ import AppKit
 import WebKit
 import PDFKit
 
-// Uses the same local HTML parser/renderer as the browser edition.
+// Validates attachments using the browser edition; never renders a replacement PDF.
 final class Converter: NSObject, WKNavigationDelegate {
     let app = NSApplication.shared
     var view: WKWebView!
@@ -41,20 +41,12 @@ final class Converter: NSObject, WKNavigationDelegate {
             let size = try file.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
             guard size > 0 && size <= 5 * 1024 * 1024 else { throw problem("File must be between 1 byte and 5 MB.") }
             let data = try Data(contentsOf: file)
-            let name = String(data: try JSONSerialization.data(withJSONObject: [file.lastPathComponent]), encoding: .utf8)!
             let js = """
             const bytes=Uint8Array.from(atob('\(data.base64EncodedString())'),c=>c.charCodeAt(0));
-            const source=decode(bytes.buffer);
-            if(/<!DOCTYPE|<!ENTITY/i.test(source)) throw Error('DTD and entity declarations are not allowed.');
-            const doc=new DOMParser().parseFromString(source,'application/xml');
-            if(doc.getElementsByTagName('parsererror').length) throw Error('Malformed XML.');
-            if(doc.getElementsByTagName('*').length>30000) throw Error('Too many XML elements.');
-            const rows=fields(doc.documentElement),model=parseInvoice(doc);
-            document.querySelector('#appendix').checked=false;
-            if(!document.querySelector('#native-print')){const style=document.createElement('style');style.id='native-print';style.textContent='@media print{body{font-size:13px}.parties{margin:20px 0}.notice{margin-top:14px;padding-top:8px}}';document.head.append(style);}
-            render(model,null,\(name)[0],rows);
-            const pdfs=Array.from(doc.getElementsByTagName('*')).filter(n=>n.localName==='EmbeddedDocumentBinaryObject'&&n.getAttribute('mimeCode')==='application/pdf');
-            return pdfs.length===1 ? pdfs[0].textContent.replace(/\\s/g,'') : '';
+            const attachments=await extractOriginals(bytes.buffer);
+            if(attachments.length!==1) throw Error('Multiple PDF attachments: use the browser tool to select the invoice PDF.');
+            if(attachments[0].error) throw Error(attachments[0].error);
+            return pdfCandidates(invoiceDocument(bytes.buffer))[0].textContent.replace(/\\s/g,'');
             """
             view.callAsyncJavaScript(js, arguments: [:], in: nil, in: .page) { result in
                 switch result {
@@ -66,33 +58,11 @@ final class Converter: NSObject, WKNavigationDelegate {
                        let pdf = PDFDocument(data: embedded), pdf.pageCount > 0 {
                         do {try self.save(embedded, beside: file); self.next()} catch {self.failed(file,error)}
                     } else {
-                        self.printPDF(file)
+                        self.failed(file, self.problem("The original PDF attachment could not be read. No substitute PDF was created."))
                     }
                 }
             }
         } catch { failed(file, error) }
-    }
-    func printPDF(_ file: URL) {
-        let temporary = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".pdf")
-        let info = NSPrintInfo()
-        info.paperSize = NSSize(width: 595.28, height: 841.89)
-        info.topMargin = 42.5; info.bottomMargin = 42.5; info.leftMargin = 36.85; info.rightMargin = 36.85
-        info.isHorizontallyCentered = false; info.isVerticallyCentered = false
-        info.jobDisposition = .save
-        info.dictionary()[NSPrintInfo.AttributeKey.jobSavingURL] = temporary
-        let operation = view.printOperation(with: info)
-        operation.showsPrintPanel = false; operation.showsProgressPanel = false
-        operation.runModal(for: window, delegate: self, didRun: #selector(printed(_:success:context:)), contextInfo: Unmanaged.passRetained(PrintJob(file: file, temp: temporary)).toOpaque())
-    }
-    @objc func printed(_ operation: NSPrintOperation, success: Bool, context: UnsafeMutableRawPointer?) {
-        guard let context = context else { return }
-        let job = Unmanaged<PrintJob>.fromOpaque(context).takeRetainedValue()
-        defer { try? FileManager.default.removeItem(at: job.temp) }
-        do {
-            guard success, let pdf = PDFDocument(url: job.temp), pdf.pageCount > 0 else { throw problem("PDF rendering failed.") }
-            try save(Data(contentsOf: job.temp), beside: job.file)
-            next()
-        } catch { failed(job.file,error) }
     }
     func save(_ data: Data, beside file: URL) throws {
         let directory = file.deletingLastPathComponent()
@@ -131,7 +101,6 @@ final class Converter: NSObject, WKNavigationDelegate {
         exit(failures.isEmpty ? 0 : 1)
     }
 }
-final class PrintJob { let file: URL; let temp: URL; init(file: URL,temp: URL){self.file=file;self.temp=temp} }
 var args = Array(CommandLine.arguments.dropFirst())
 let quiet = args.first == "--quiet"
 if quiet { args.removeFirst() }
