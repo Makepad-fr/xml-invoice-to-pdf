@@ -1,44 +1,61 @@
 # XML to PDF
 
-A minimal, black-and-white invoice reader. Convert UBL or CII XML to a readable PDF without uploading invoice data.
+A minimal, black-and-white tool to recover the original PDF embedded in a UBL or
+CII invoice XML. It downloads the **unchanged PDF bytes**: no converter labels,
+footers, watermarks, added pages, print dialog, or reconstructed layout.
 
 **[Open the converter](https://makepad-fr.github.io/xml-invoice-to-pdf/)**
 
 ## Use
 
-Drop XML files onto the page, select a file to preview, and choose **Save PDF**.
-Choose **Save all as one PDF** to combine valid invoices. The browser print dialog
-lets you choose the destination. Enable **XML appendix** to include source fields
-not displayed in the summary. Up to 50 files; 5 MB per file.
+Drop XML files onto the page, select an invoice, and click **Export PDF** for a
+direct download. The preview shows the original attachment. If an XML contains
+multiple PDFs, select the correct attachment; the tool does not guess which is
+the invoice. **Export all (ZIP)** preserves each selected PDF as its own unchanged
+file, with unique filenames. A failed or unresolved file blocks batch export so
+nothing is silently omitted; remove it or resolve its attachment selection first.
+Up to 50 XML files, each up to 5 MB. Browsers without inline PDF viewing can still
+download the file.
 
-For offline use, download `index.html` and open it in Chrome or Firefox.
-No installation, account, runtime libraries, server, telemetry or browser storage.
-GitHub serves the application when you visit Pages; invoice processing stays
-inside your browser. The app's Content Security Policy blocks outbound connections.
-Browser extensions and cloud-synced save destinations are outside its control.
+An XML with no embedded PDF has no original visual layout to recover. Export is
+unavailable for that file, with an explanation in the UI. No approximate invoice
+is silently substituted. External PDF links are never fetched.
+
+For offline use, download `index.html` and open it in Chrome or Firefox. The PDF
+validator is bundled inline; no runtime downloads, account, server, telemetry or
+browser storage are required. GitHub serves the application when you visit Pages;
+invoice processing stays inside your browser. The Content Security Policy blocks
+outbound connections. Browser extensions and cloud-synced save folders are outside
+its control.
 
 ## Formats
 
-- UBL Invoice / CreditNote (`Invoice-2` / `CreditNote-2` namespaces, including UBL 2.1).
-- CII CrossIndustryInvoice (`:100` namespace), including Factur-X XML.
-- Factur-X PDF is already readable; importing/extracting XML from PDFs is not supported.
-- Proprietary XML, older CII namespaces, and arbitrary XML need a dedicated adapter.
+- UBL Invoice / CreditNote (`Invoice-2` / `CreditNote-2` namespaces, including UBL 2.1)
+  with an embedded `application/pdf` attachment.
+- CII CrossIndustryInvoice (`:100` namespace) with an embedded PDF attachment.
+- Standalone Factur-X PDF is already readable; PDF-to-XML extraction is not included.
+- XML-only invoices, proprietary XML, and external attachment URLs cannot provide
+  an exact original through this tool.
 
-This is a reading copy, not a certified Factur-X/PDF-A generator or a fiscal,
-schema or EN 16931 validator. Amounts are copied without recalculation. Keep the
-original XML. Embedded binary attachments are not reproduced in the browser PDF.
-The appendix includes text fields and attributes, excluding namespace declarations
-and binary payloads. Summary-only profiles may contain no invoice lines.
+PDFs are structurally checked using the bundled MIT-licensed pdf-lib 1.17.1 and
+then downloaded without re-serialization, preserving metadata, forms, signatures,
+attachments and supplier formatting. This does not verify authenticity, legal
+compliance, signatures, or whether an attachment's figures match its enclosing XML.
+Malformed or encrypted PDFs are rejected. Keep the original XML.
 
 ## Development
 
-The buildless application is `index.html`. Only browser tests need Node.js:
+The self-contained application is `index.html`. Browser tests need Node.js:
 
 ```sh
 npm ci
 npx playwright install chromium
 npm test
 ```
+
+Rebuild the inlined validator after dependency changes with
+`node scripts/embed-pdf-validator.cjs`. Tests verify byte equality of actual
+downloads, ZIP integrity, no print calls, bad inputs and zero outgoing requests.
 
 Tests use fictional fixtures. Never commit real invoices, generated PDFs, contact
 details, credentials or account exports. CI runs on GitHub-hosted Ubuntu.
