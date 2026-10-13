@@ -11,8 +11,22 @@ footers, watermarks, added pages, print dialog, or reconstructed layout.
 Drop XML files onto the page, select an invoice, and click **Export PDF** for a
 direct download. The preview shows the original attachment. If an XML contains
 multiple PDFs, select the correct attachment; the tool does not guess which is
-the invoice. **Export all (ZIP)** preserves each selected PDF as its own unchanged
-file, with unique filenames. A failed or unresolved file blocks batch export so
+the invoice.
+
+**Export all** defaults to **PDF files** when the browser supports folder saving
+(the File System Access API, in a secure top-level page). Choose a destination
+folder once; up to four PDFs save concurrently, preserving their original bytes.
+Existing names and duplicates receive numbered suffixes. Cancelling the picker
+cancels the export. If a write fails, the page reports which files failed and how
+many succeeded; it does not automatically download another copy of the batch.
+
+Select **ZIP archive** to download a ZIP instead. Browsers without folder saving
+use ZIP automatically, as do browsers that report the picker as unsupported or
+blocked by a security policy. A permission refusal is reported without starting
+another download. This uses a browser folder picker, not unrestricted downloads
+to the default Downloads folder. All PDFs remain unchanged in either mode.
+
+A failed or unresolved file blocks batch export so
 nothing is silently omitted; remove it or resolve its attachment selection first.
 Up to 50 XML files, each up to 5 MB. Browsers without inline PDF viewing can still
 download the file.
@@ -56,6 +70,10 @@ npm test
 Rebuild the inlined validator after dependency changes with
 `node scripts/embed-pdf-validator.cjs`. Tests verify byte equality of actual
 downloads, ZIP integrity, no print calls, bad inputs and zero outgoing requests.
+Batch tests cover concurrent writes, filename collisions, cancellation, denied
+permission, partial failures and ZIP fallback. They also verify real browser
+filesystem writes using an origin-private directory; the OS folder picker itself
+is substituted in automation.
 
 Tests use fictional fixtures. Never commit real invoices, generated PDFs, contact
 details, credentials or account exports. CI runs on GitHub-hosted Ubuntu.
