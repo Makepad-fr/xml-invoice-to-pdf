@@ -2,7 +2,7 @@
 
 A minimal, black-and-white invoice reader. Convert UBL or CII XML to a readable PDF without uploading invoice data.
 
-**[Open the converter](https://kaanyagci.github.io/xml-invoice-to-pdf/)**
+**[Open the converter](https://makepad-fr.github.io/xml-invoice-to-pdf/)**
 
 ## Use
 
