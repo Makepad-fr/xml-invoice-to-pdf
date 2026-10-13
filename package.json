@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "node tests/browser.cjs",
+    "test": "node tests/browser.cjs && node tests/bulk-export.cjs",
     "embed-validator": "node scripts/embed-pdf-validator.cjs"
   },
   "devDependencies": {
