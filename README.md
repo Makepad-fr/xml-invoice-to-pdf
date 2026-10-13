@@ -50,9 +50,11 @@ MIT. See [LICENSE](LICENSE).
 ## macOS Finder Quick Action
 
 Requires macOS 12+ and Apple's Command Line Tools (`xcode-select --install`).
-Download/clone the repository, then run from its directory:
+Clone the organization repository and install the Finder action:
 
 ```sh
+git clone https://github.com/Makepad-fr/xml-invoice-to-pdf.git
+cd xml-invoice-to-pdf
 bash macos/install.sh
 ```
 
